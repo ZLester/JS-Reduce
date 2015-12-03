@@ -138,7 +138,7 @@
   console.log(mistakeVals.reduce(mistakeSum));
 
   // ...and almost leads to unexpected results
-  var mistakeVotes = ['stark', 'stark', 'greyjoy', 'greyjoy'];
+  var mistakeVotes = ['stark', 'stark', 'lannister', 'lannister', 'lannister', 'greyjoy'];
   var mistakeTally = function (tally, item) {
     if (!tally[item]) {
       tally[item] = 1;
@@ -194,7 +194,7 @@
     age: 28,
     likes: [
       'JavaScript',
-      'Roguelikes',
+      'Bad Puns',
       'Reduce',
     ]
   }, {

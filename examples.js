@@ -175,10 +175,10 @@
     ]
   }, {
     name: 'Dan',
-    age: 30,
+    age: 29,
     likes: [
       'Crickets',
-      'JavaScript',
+      'The Queen',
       'Being Proper'
     ]
   }, {

@@ -1,21 +1,21 @@
 // Sum
 {
-  var data = [];
+  var valuesToSum = [];
 
   var reducer = function(accumulator, item) {
     return accumulator + item;
   };
 
-  var initialValue = 0;
+  var initialValue = 10;
 
-  var total = data.reduce(reducer, initialValue);
+  var total = valuesToSum.reduce(reducer, initialValue); // Still works despite valuesToSum being empty
 
-  console.log('The total is ' + total + '.');
+  console.log(total);
 }
 
 // Transforming an Array into an Object
 {
-  var frameworkVotes = ['angular', 'react', 'react', 'angular', 'react', 'angular', 'backbone', 'backbone', 'ember', 'react', 'react', 'angular'];
+  var votesToTally = ['angular', 'react', 'react', 'angular', 'react', 'backbone'];
 
   var tallyVotes = function (tally, item) {
     if (!tally[item]) {
@@ -26,23 +26,24 @@
     return tally;
   }
 
-  var tally = frameworkVotes.reduce(tallyVotes, {});
+  var tally = votesToTally.reduce(tallyVotes, {});
 
   console.log(tally);
 }
 
 // Map
 {
-  var doubleVals = [1, 11, 21, 1211, 111221];
+  var valuesToDouble = [1, 11, 21, 1211, 111221];
 
-  var double = function(accumulator, item) {
+  var doubler = function(accumulator, item) {
     accumulator.push(item * 2);
     return accumulator;
   }
 
-  var doubleMap = doubleVals.reduce(double, []);
-
+  var doubleMap = valuesToDouble.reduce(doubler, []);
+  
   console.log(doubleMap);
+  
 }
 
 // Filter
@@ -54,25 +55,26 @@
       accumulator.push(item);
     }
     return accumulator;
-  }
+  };
 
   var odds = valuesToFilter.reduce(findOdds, []);
 
-  console.log(odds);
 }
 
 // FilterMap with Reduce vs. Chaining 1
 {
   var valuesToFilterMap = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-  var oddsDoubler = function(acc, item) {
+  var findOddsAndDouble = function(acc, item) {
     if (item % 2 !== 0) {
       acc.push(item * 2);
     }
     return acc;
   }
 
-  var oddsDoubledReduced = valuesToFilterMap.reduce(oddsDoubler, []);
+  var oddsDoubledReduced = valuesToFilterMap.reduce(findOddsAndDouble, []);
+
+  console.log(oddsDoubledReduced);
 
   var oddsDoubledChained = valuesToFilterMap.filter(function(item) {
     return item % 2 !== 0;
@@ -80,7 +82,7 @@
     return item * 2;
   });
 
-  console.log(oddsDoubledReduced, oddsDoubledChained);
+  console.log(oddsDoubledChained);
 }
 
 // FilterMap with Reduce vs. Chaining 2
@@ -111,7 +113,7 @@
 // Other Reduce Args - Finding Mean with Reduce
 {
   var testScores = [96, 88, 64, 78, 54, 98];
-  var findSum = function(acc, value) {
+  var sum = function(acc, value) {
     return acc + value;
   }
 
@@ -122,20 +124,24 @@
     }
     return sum/collection.length;
   }
-  console.log(testScores.reduce(findSum, 0)/testScores.length);
+  
+  console.log(testScores.reduce(sum, 0)/testScores.length);
   console.log(testScores.reduce(findMean, 0));
+
 }
 
 // Common Mistakes with Reduce
 {
-  // Not including a initial value is rarely useful...
-  var mistakeVals = [1, 3, 5, 8, 9];
+  // The "feature" of reduce defaulting the intial value to the first element in the collection is rarely useful...
+  var mistakeVals = [1, 2, 3];
 
   var mistakeSum = function(acc, val) {
     return acc + val;
   }
-
-  console.log(mistakeVals.reduce(mistakeSum));
+  
+  var mistakeValsReduced = mistakeVals.reduce(mistakeSum);
+  
+  console.log(mistakeValsReduced) // Still returns 6 despite no initial value
 
   // ...and almost always leads to unexpected results
   var mistakeVotes = ['stark', 'stark', 'lannister', 'lannister', 'lannister', 'greyjoy'];
@@ -145,22 +151,26 @@
     } else {
       tally[item]++;
     }
-    // Not returning your accumulator is the other most common mistake
+    // Failing to return your accumulator is the other most common mistake
     return tally;
   }
 
-  console.log(mistakeVotes.reduce(mistakeTally));
+  var unexpectedResult = mistakeVotes.reduce(mistakeTally));
+  
+  console.log(unexpectedResult);
 }
 
 // Flatten
 {
-  var arrsToFlatten = [[1,2,3],[4,5,6],[7,8,9]];
+  var nestedArraysToFlatten = [[1,2,3],[4,5,6],[7,8,9]];
 
-  var flatArr = arrsToFlatten.reduce(function(acc, arr) {
+  var flatten = function(acc, arr) {
     return acc.concat(arr);
-  }, []);
+  }
 
-  console.log(flatArr);
+  var flattened = nestedArrays.reduce(flatten, []);
+
+  console.log(flattened);
 }
 
 // FlatMap
@@ -207,14 +217,10 @@
     ]
   }];
 
-  var mentorNames = techMentors.reduce(function(names, mentor) {
-    return names.concat(mentor.name);
-  }, []);
-
-  var mentorNamesAndAges = techMentors.reduce(function(mentors, mentor) {
-    mentors.names.push(mentor.name);
-    mentors.ages.push(mentor.age);
-    return mentors;
+  var mentorNamesAndAges = techMentors.reduce(function(namesAndAges, mentor) {
+    namesAndAges.names.push(mentor.name);
+    namesAndAges.ages.push(mentor.age);
+    return namesAndAges;
   }, {names: [], ages: []});
 
   var mentorLikes = techMentors.reduce(function(likes, mentor, index, mentors) {
@@ -223,9 +229,10 @@
         likes.push(like);
       }
     });
-    return index === mentors.length - 1 ? likes.sort() : likes;
+    return index !== mentors.length - 1 ? likes : likes.sort();
   }, []);
-  console.log(mentorNames);
+
   console.log(mentorNamesAndAges);
   console.log(mentorLikes);
+
 }

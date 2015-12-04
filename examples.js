@@ -155,7 +155,7 @@
     return tally;
   }
 
-  var unexpectedResult = mistakeVotes.reduce(mistakeTally));
+  var unexpectedResult = mistakeVotes.reduce(mistakeTally);
   
   console.log(unexpectedResult);
 }
@@ -168,7 +168,7 @@
     return acc.concat(arr);
   }
 
-  var flattened = nestedArrays.reduce(flatten, []);
+  var flattened = nestedArraysToFlatten.reduce(flatten, []);
 
   console.log(flattened);
 }

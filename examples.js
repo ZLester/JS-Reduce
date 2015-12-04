@@ -137,7 +137,7 @@
 
   console.log(mistakeVals.reduce(mistakeSum));
 
-  // ...and almost leads to unexpected results
+  // ...and almost always leads to unexpected results
   var mistakeVotes = ['stark', 'stark', 'lannister', 'lannister', 'lannister', 'greyjoy'];
   var mistakeTally = function (tally, item) {
     if (!tally[item]) {

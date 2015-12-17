@@ -1,21 +1,25 @@
 // Sum
 {
-  var valuesToSum = [];
-
+  var valuesToSum = [10, 12, 15];
+   
   var reducer = function(accumulator, item) {
     return accumulator + item;
   };
 
   var initialValue = 10;
+  
+  var total = valuesToSum.reduce(reducer, initialValue); 
+  console.log(total); // 47
+  
+  var emptyValuestoSum = [];
+  var emptyTotal = emptyValuestoSum.reduce(reducer, initialValue); // 
 
-  var total = valuesToSum.reduce(reducer, initialValue); // Still works despite valuesToSum being empty
-
-  console.log(total);
+  console.log(emptyTotal) // 10 (still works despite emptyValuestoSum being empty)
 }
 
 // Transforming an Array into an Object
 {
-  var votesToTally = ['angular', 'react', 'react', 'angular', 'react', 'backbone'];
+  var frameworkVotes = ['angular', 'react', 'react', 'angular', 'react', 'backbone'];
 
   var tallyVotes = function (tally, item) {
     if (!tally[item]) {
@@ -26,9 +30,9 @@
     return tally;
   }
 
-  var tally = votesToTally.reduce(tallyVotes, {});
+  var tally = frameworkVotes.reduce(tallyVotes, {});
 
-  console.log(tally);
+  console.log(tally); // { angular: 2, react: 3, backbone: 1 }
 }
 
 // Map
@@ -42,7 +46,7 @@
 
   var doubleMap = valuesToDouble.reduce(doubler, []);
   
-  console.log(doubleMap);
+  console.log(doubleMap); // [2, 22, 42, 2422, 222442]
   
 }
 
@@ -57,13 +61,13 @@
     return accumulator;
   };
 
-  var odds = valuesToFilter.reduce(findOdds, []);
+  var odds = valuesToFilter.reduce(findOdds, []); // [1,3,5,7,9]
 
 }
 
 // FilterMap with Reduce vs. Chaining 1
 {
-  var valuesToFilterMap = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  var valuesToFilterMap = [2,5,7,9,10];
 
   var findOddsAndDouble = function(acc, item) {
     if (item % 2 !== 0) {
@@ -72,9 +76,9 @@
     return acc;
   }
 
-  var oddsDoubledReduced = valuesToFilterMap.reduce(findOddsAndDouble, []);
+  var oddsDoubled = valuesToFilterMap.reduce(findOddsAndDouble, []);
 
-  console.log(oddsDoubledReduced);
+  console.log(oddsDoubled); // [10,14,18]
 
   var oddsDoubledChained = valuesToFilterMap.filter(function(item) {
     return item % 2 !== 0;
@@ -82,7 +86,7 @@
     return item * 2;
   });
 
-  console.log(oddsDoubledChained);
+  console.log(oddsDoubledChained); // Still [10, 14, 18], and this is arguably more readible
 }
 
 // FilterMap with Reduce vs. Chaining 2
@@ -112,11 +116,13 @@
 
 // Other Reduce Args - Finding Mean with Reduce
 {
-  var testScores = [96, 88, 64, 78, 54, 98];
+  var testScores = [96, 87, 64, 78, 54, 98];
   var sum = function(acc, value) {
     return acc + value;
   }
 
+  console.log(testScores.reduce(sum, 0)/testScores.length); // 79.5
+  
   var findMean = function(acc, value, index, collection) {
     var sum = acc + value;
     if (index !== collection.length - 1) {
@@ -125,9 +131,8 @@
     return sum/collection.length;
   }
   
-  console.log(testScores.reduce(sum, 0)/testScores.length);
-  console.log(testScores.reduce(findMean, 0));
 
+  console.log(testScores.reduce(findMean, 0)); // 79.5, all within the reduce!
 }
 
 // Common Mistakes with Reduce
@@ -139,25 +144,48 @@
     return acc + val;
   }
   
-  var mistakeValsReduced = mistakeVals.reduce(mistakeSum);
-  
-  console.log(mistakeValsReduced) // Still returns 6 despite no initial value
+  var mistakeValsSummedNoInitial = mistakeVals.reduce(mistakeSum);
+  var mistakeValsSummedWithInitial = mistakeVals.reduce(mistakeSum, 0);
+  console.log(mistakeValsSummedNoInitial, mistakeValsSummedWithInitial) // 6, 6 (despite the first not passing an initial value)
 
   // ...and almost always leads to unexpected results
-  var mistakeVotes = ['stark', 'stark', 'lannister', 'lannister', 'lannister', 'greyjoy'];
-  var mistakeTally = function (tally, item) {
+  var ironThrone = ['Stark', 'Stark', 'Lannister', 'Lannister', 'Lannister', 'Greyjoy'];
+  var mistakeTallyNoInit = function (tally, item) {
     if (!tally[item]) {
       tally[item] = 1;
     } else {
       tally[item]++;
     }
-    // Failing to return your accumulator is the other most common mistake
     return tally;
   }
-
-  var unexpectedResult = mistakeVotes.reduce(mistakeTally);
+  var noInitialValue = ironThrone.reduce(mistakeTallyNoInit);
+  console.log(noInitialValue); // Stark
   
-  console.log(unexpectedResult);
+  // Failing to return your accumulator is the other most common mistake
+  var mistakeTallyNoAccReturn = function (tally, item) {
+    if (!tally[item]) {
+      tally[item] = 1;
+    } else {
+      tally[item]++;
+    }
+    // return tally;
+  }
+  // var noAccReturned = ironThrone.reduce(mistakeTallyNoAccReturn, {}); // throws an error
+}
+
+// Toy Problems...reduced!
+{
+  var findLongestWord = function(sentence) {
+    return sentence.split(' ').reduce(function(acc, word, index, wordArr) {
+      if (acc.length < word.length) {
+        acc = word;
+      }
+      return acc;
+    }, "");
+  }
+
+  var longestWord = findLongestWord("I have come here to return accumulators and chew bubblegum..."); 
+  console.log(longestWord); // 'accumulators'
 }
 
 // Flatten
@@ -169,8 +197,7 @@
   }
 
   var flattened = nestedArraysToFlatten.reduce(flatten, []);
-
-  console.log(flattened);
+  console.log(flattened); // [1,2,3,4,5,6,7,8,9]
 }
 
 // FlatMap
@@ -222,8 +249,10 @@
     namesAndAges.ages.push(mentor.age);
     return namesAndAges;
   }, {names: [], ages: []});
+  
+  console.log(mentorNamesAndAges);
 
-  var mentorLikes = techMentors.reduce(function(likes, mentor, index, mentors) {
+  var sortedMentorLikes = techMentors.reduce(function(likes, mentor, index, mentors) {
     mentor.likes.forEach(function(like) {
       if (likes.indexOf(like) === -1) {
         likes.push(like);
@@ -232,7 +261,5 @@
     return index !== mentors.length - 1 ? likes : likes.sort();
   }, []);
 
-  console.log(mentorNamesAndAges);
-  console.log(mentorLikes);
-
+  console.log(sortedMentorLikes);
 }

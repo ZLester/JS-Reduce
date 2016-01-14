@@ -47,7 +47,6 @@
   var doubleMap = valuesToDouble.reduce(doubler, []);
   
   console.log(doubleMap); // [2, 22, 42, 2422, 222442]
-  
 }
 
 // Filter
@@ -62,7 +61,6 @@
   };
 
   var odds = valuesToFilter.reduce(findOdds, []); // [1,3,5,7,9]
-
 }
 
 // FilterMap with Reduce vs. Chaining 1
@@ -262,4 +260,26 @@
   }, []);
 
   console.log(sortedMentorLikes);
+}
+
+// Pseudo-redux example
+{
+  var counterReducer = function(state, action) {
+    switch (action.type) {
+      case 'INCREMENT':
+        return Object.assign({}, state, state.count++);
+      case 'DECREMENT':
+        return Object.assign({}, state, state.count--);
+      default:
+        return state;
+    }
+  };
+
+  var initialCountState = {
+    count: 0
+  };
+
+  var actions = [{type: 'INCREMENT'}, {type: 'NOT_VALID'}, {type: 'INCREMENT'}, {type: 'DECREMENT'}];
+
+  console.log(actions.reduce(counterReducer, initialCountState));
 }

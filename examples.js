@@ -1,4 +1,4 @@
-// Sum
+// The Basics - Sum
 {
   var valuesToSum = [10, 12, 15];
    
@@ -260,6 +260,14 @@
   }, []);
 
   console.log(sortedMentorLikes);
+}
+
+// Pseudo-react example
+{
+  var tableRowReducer = function(html, mentor) {
+     return html + '<tr><td> ' + mentor.name +', <td><td>' + mentor.age + '</td></tr>';
+  };
+  techMentors.reduce(tableReducer, "");
 }
 
 // Pseudo-redux example

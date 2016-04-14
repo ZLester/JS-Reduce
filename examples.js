@@ -262,14 +262,6 @@
   console.log(sortedMentorLikes);
 }
 
-// Pseudo-react example
-{
-  var tableRowReducer = function(html, mentor) {
-     return html + '<tr><td> ' + mentor.name +', <td><td>' + mentor.age + '</td></tr>';
-  };
-  techMentors.reduce(tableReducer, "");
-}
-
 // Pseudo-redux example
 {
   var counterReducer = function(state, action) {

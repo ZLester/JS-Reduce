@@ -84,7 +84,7 @@
     return item * 2;
   });
 
-  console.log(oddsDoubledChained); // Still [10, 14, 18], and this is arguably more readible
+  console.log(oddsDoubledChained); // Still [10, 14, 18], and this is arguably more readible...so why use reduce at all?
 }
 
 // FilterMap with Reduce vs. Chaining 2
@@ -110,6 +110,7 @@
     return acc;
   }, [])
   console.timeEnd('BigDataReduce');
+  // What causes such a large performance boost?
 }
 
 // Other Reduce Args - Finding Mean with Reduce
@@ -256,30 +257,10 @@
         likes.push(like);
       }
     });
+    // This is generally an anti-pattern – doing something different on the last index means the action is probably a good candidate for chaining
+    // In "real" code I would probably just return the accumulator and chain `.sort` to the returned array.
     return index !== mentors.length - 1 ? likes : likes.sort();
   }, []);
 
   console.log(sortedMentorLikes);
-}
-
-// Pseudo-redux example
-{
-  var counterReducer = function(state, action) {
-    switch (action.type) {
-      case 'INCREMENT':
-        return Object.assign({}, state, state.count++);
-      case 'DECREMENT':
-        return Object.assign({}, state, state.count--);
-      default:
-        return state;
-    }
-  };
-
-  var initialCountState = {
-    count: 0
-  };
-
-  var actions = [{type: 'INCREMENT'}, {type: 'NOT_VALID'}, {type: 'INCREMENT'}, {type: 'DECREMENT'}];
-
-  console.log(actions.reduce(counterReducer, initialCountState));
 }

@@ -9,11 +9,12 @@
   var initialValue = 10;
   
   var total = valuesToSum.reduce(reducer, initialValue); 
+  
   console.log(total); // 47
   
   var emptyValuestoSum = [];
   var emptyTotal = emptyValuestoSum.reduce(reducer, initialValue); // 
-
+  
   console.log(emptyTotal) // 10 (still works despite emptyValuestoSum being empty)
 }
 
@@ -37,57 +38,57 @@
 
 // Map
 {
-  var valuesToDouble = [1, 11, 21, 1211, 111221];
+  var valuesToDouble = [1, 2, 3, 4, 5];
 
-  var doubler = function(accumulator, item) {
-    accumulator.push(item * 2);
-    return accumulator;
-  }
-
-  var doubleMap = valuesToDouble.reduce(doubler, []);
+  // Notice the inline callback
+  var doubleMap = valuesToDouble
+    .reduce(function(accumulator, item) {
+      accumulator.push(item * 2);
+      return accumulator;
+    }, []);
   
-  console.log(doubleMap); // [2, 22, 42, 2422, 222442]
+  console.log(doubleMap); // [2, 4, 6, 8, 10]
 }
 
 // Filter
 {
   var valuesToFilter = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-  var findOdds = function(accumulator, item) {
-    if (item % 2 !== 0) {
-      accumulator.push(item);
-    }
-    return accumulator;
-  };
-
-  var odds = valuesToFilter.reduce(findOdds, []); // [1,3,5,7,9]
+  var odds = valuesToFilter
+    .reduce(function(accumulator, item) {
+      if (item % 2 !== 0) {
+        accumulator.push(item);
+      }
+      return accumulator;
+    }, []); // [1,3,5,7,9]
 }
 
-// FilterMap with Reduce vs. Chaining 1
+// FilterMap with Reduce vs. Chaining Part 1
 {
   var valuesToFilterMap = [2,5,7,9,10];
 
-  var findOddsAndDouble = function(acc, item) {
-    if (item % 2 !== 0) {
-      acc.push(item * 2);
-    }
-    return acc;
-  }
-
-  var oddsDoubled = valuesToFilterMap.reduce(findOddsAndDouble, []);
+  var oddsDoubled = valuesToFilterMap
+    .reduce(function(acc, item) {
+      if (item % 2 !== 0) {
+        acc.push(item * 2);
+      }
+      return acc;
+    }, []);
 
   console.log(oddsDoubled); // [10,14,18]
 
-  var oddsDoubledChained = valuesToFilterMap.filter(function(item) {
-    return item % 2 !== 0;
-  }).map(function(item) {
-    return item * 2;
-  });
+  var oddsDoubledChained = valuesToFilterMap
+    .filter(function(item) {
+      return item % 2 !== 0;
+    })
+    .map(function(item) {
+      return item * 2;
+    });
 
-  console.log(oddsDoubledChained); // Still [10, 14, 18], and this is arguably more readible...so why use reduce at all?
+  console.log(oddsDoubledChained); // [10, 14, 18], and this is quite a bit more readible...so why use reduce at all?
 }
 
-// FilterMap with Reduce vs. Chaining 2
+// FilterMap with Reduce vs. Chaining Part 2
 {
   var bigData = [];
   for (var i = 0; i < 10000000; i++) {
@@ -110,7 +111,8 @@
     return acc;
   }, [])
   console.timeEnd('BigDataReduce');
-  // What causes such a large performance boost?
+  
+  // What causes the performance boost?
 }
 
 // Other Reduce Args - Finding Mean with Reduce
@@ -130,7 +132,6 @@
     return sum/collection.length;
   }
   
-
   console.log(testScores.reduce(findMean, 0)); // 79.5, all within the reduce!
 }
 
@@ -149,7 +150,7 @@
 
   // ...and almost always leads to unexpected results
   var ironThrone = ['Stark', 'Stark', 'Lannister', 'Lannister', 'Lannister', 'Greyjoy'];
-  var mistakeTallyNoInit = function (tally, item) {
+  var mistakeTallyNoInit = function(tally, item) {
     if (!tally[item]) {
       tally[item] = 1;
     } else {
@@ -158,10 +159,11 @@
     return tally;
   }
   var noInitialValue = ironThrone.reduce(mistakeTallyNoInit);
-  console.log(noInitialValue); // Stark
+
+  console.log(noInitialValue); // Stark (throws an error in strict mode)
   
   // Failing to return your accumulator is the other most common mistake
-  var mistakeTallyNoAccReturn = function (tally, item) {
+  var mistakeTallyNoAccReturn = function(tally, item) {
     if (!tally[item]) {
       tally[item] = 1;
     } else {
@@ -180,10 +182,11 @@
         acc = word;
       }
       return acc;
-    }, "");
+    }, '');
   }
 
   var longestWord = findLongestWord("I have come here to return accumulators and chew bubblegum..."); 
+  
   console.log(longestWord); // 'accumulators'
 }
 
@@ -196,6 +199,7 @@
   }
 
   var flattened = nestedArraysToFlatten.reduce(flatten, []);
+  
   console.log(flattened); // [1,2,3,4,5,6,7,8,9]
 }
 
@@ -243,24 +247,25 @@
     ]
   }];
 
-  var mentorNamesAndAges = techMentors.reduce(function(namesAndAges, mentor) {
-    namesAndAges.names.push(mentor.name);
-    namesAndAges.ages.push(mentor.age);
-    return namesAndAges;
-  }, {names: [], ages: []});
+  var mentorNamesAndAges = techMentors
+    .reduce(function(namesAndAges, mentor) {
+      namesAndAges.names.push(mentor.name);
+      namesAndAges.ages.push(mentor.age);
+      return namesAndAges;
+    }, {names: [], ages: []});
   
   console.log(mentorNamesAndAges);
 
-  var sortedMentorLikes = techMentors.reduce(function(likes, mentor, index, mentors) {
-    mentor.likes.forEach(function(like) {
-      if (likes.indexOf(like) === -1) {
-        likes.push(like);
-      }
-    });
-    // This is generally an anti-pattern – doing something different on the last index means the action is probably a good candidate for chaining
-    // In "real" code I would probably just return the accumulator and chain `.sort` to the returned array.
-    return index !== mentors.length - 1 ? likes : likes.sort();
-  }, []);
+  var sortedMentorLikes = techMentors
+    .reduce(function(likes, mentor, index, mentors) {
+      mentor.likes.forEach(function(like) {
+        if (likes.indexOf(like) === -1) {
+          likes.push(like);
+        }
+      });
+      return likes;
+    }, [])
+    .sort();
 
   console.log(sortedMentorLikes);
 }

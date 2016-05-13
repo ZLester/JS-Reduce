@@ -13,7 +13,7 @@
   console.log(total); // 47
   
   var emptyValuestoSum = [];
-  var emptyTotal = emptyValuestoSum.reduce(reducer, initialValue); // 
+  var emptyTotal = emptyValuestoSum.reduce(reducer, initialValue); 
   
   console.log(emptyTotal) // 10 (still works despite emptyValuestoSum being empty)
 }

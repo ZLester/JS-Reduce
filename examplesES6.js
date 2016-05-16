@@ -3,9 +3,7 @@
 {
   const valuesToSum = [10, 12, 15];
 
-  const reducer = (accumulator, item) => {
-    return accumulator + item;
-  };
+  const reducer = (accumulator, item) => accumulator + item;
 
   const initialValue = 10;
   
@@ -255,3 +253,23 @@
 
   console.log(sortedMentorLikes);
 }
+
+// Reducing Functions – Pipe and Compose with Reduce
+{
+  const add1 = x => x + 1;    
+  
+  const mult5 = x => x * 5;
+  
+  const funcs = [add1, mult5];
+  
+  const pipedResults = funcs
+    .reduce((result, func) => func(result), 2);
+
+  // Iterating from back to front with reduceRight
+  const composedResults = funcs
+    .reduceRight((result, func) => func(result), 2);
+  
+  console.log(pipedResults); // 15 ((2 + 1) * 5)
+  console.log(composedResults); // 11 ((2 * 5) + 1)
+}
+

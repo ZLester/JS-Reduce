@@ -269,3 +269,30 @@
 
   console.log(sortedMentorLikes);
 }
+
+// Reducing Functions – Pipe and Compose with Reduce
+{
+  var add1 = function(x) {
+    return x + 1;    
+  };
+  
+  var mult5 = function(x) {
+    return x * 5;
+  };
+  
+  var funcs = [add1, mult5];
+  
+  var pipedResults = funcs
+    .reduce(function(result, func) {
+      return func(result);
+    }, 2);
+
+  // Iterating from back to front with reduceRight
+  var composedResults = funcs
+    .reduceRight(function(result, func) {
+      return func(result);
+    }, 2);
+  
+  console.log(pipedResults); // 15 ((2 + 1) * 5)
+  console.log(composedResults); // 11 ((2 * 5) + 1)
+}

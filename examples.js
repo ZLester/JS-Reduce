@@ -1,20 +1,26 @@
-'use strict'
 // The Basics - Sum
 {
   const valuesToSum = [10, 12, 15];
 
+  // The reducer function is run once per each item in the array.
+  // The return value of each function call is passed as the accumulator to the next call.
+  // The entire reduce call will evaluate to whatever the final function call returns.
   const reducer = (accumulator, item) => accumulator + item;
 
-  const initialValue = 10;
-  
-  const total = valuesToSum.reduce(reducer, initialValue); 
-  
+  // The second argument to reduce serves as the initial accumulator.
+  // If no second argument is passed, the first item in the array will be used.
+  const initialAccumulator = 10;
+
+  const total = valuesToSum.reduce(reducer, initialAccumulator);
+
   console.log(total); // 47
-  
+
+  // The same rule applies even if the array is empty.
   const emptyValuestoSum = [];
-  const emptyTotal = emptyValuestoSum.reduce(reducer, initialValue);
-  
-  console.log(emptyTotal) // 10 (still works despite emptyValuestoSum being empty)
+  // Reducer is never invoked, and the initial accumulator is simply returned.
+  const emptyTotal = emptyValuestoSum.reduce(reducer, initialAccumulator);
+
+  console.log(emptyTotal); // 10 (the value of the inital accumulator)
 }
 
 // Transforming an Array into an Object
@@ -23,12 +29,11 @@
 
   const tallyVotes = (tally, item) => {
     if (!tally[item]) {
-      tally[item] = 1;
-    } else {
-      tally[item]++;
+      tally[item] = 0;
     }
+    tally[item]++;
     return tally;
-  }
+  };
 
   const tally = frameworkVotes.reduce(tallyVotes, {});
 
@@ -39,13 +44,13 @@
 {
   const valuesToDouble = [1, 2, 3, 4, 5];
 
-  // Notice the inline callback
+  // Note that it's not necessary to declare the reducer function outside of reduce
   const doubleMap = valuesToDouble
     .reduce((accumulator, item) => {
       accumulator.push(item * 2);
       return accumulator;
     }, []);
-    
+
   console.log(doubleMap); // [2, 4, 6, 8, 10]
 }
 
@@ -59,12 +64,14 @@
         accumulator.push(item);
       }
       return accumulator;
-    }, []); // [1,3,5,7,9]
+    }, []);
+
+  console.log(odds); // [1,3,5,7,9]
 }
 
 // FilterMap with Reduce vs. Chaining Part 1
 {
-  const valuesToFilterMap = [2,5,7,9,10];
+  const valuesToFilterMap = [2, 5, 7, 9, 10];
 
   const oddsDoubled = valuesToFilterMap
     .reduce((acc, item) => {
@@ -114,15 +121,15 @@
   const testScores = [96, 87, 64, 78, 54, 98];
   const sum = (acc, value) => acc + value;
 
-  console.log(testScores.reduce(sum, 0)/testScores.length); // 79.5
-  
+  console.log(testScores.reduce(sum, 0) / testScores.length); // 79.5
+
   const findMean = (acc, value, index, collection) => {
     const sum = acc + value;
     if (index !== collection.length - 1) {
       return sum;
     }
-    return sum/collection.length;
-  }
+    return sum / collection.length;
+  };
 
   console.log(testScores.reduce(findMean, 0)); // 79.5, all within the reduce!
 }
@@ -133,59 +140,39 @@
   const mistakeVals = [1, 2, 3];
 
   const mistakeSum = (acc, val) => acc + val;
-  
+
   const mistakeValsSummedNoInitial = mistakeVals.reduce(mistakeSum);
   const mistakeValsSummedWithInitial = mistakeVals.reduce(mistakeSum, 0);
- 
-  console.log(mistakeValsSummedNoInitial, mistakeValsSummedWithInitial) // 6, 6 (despite the first not passing an initial value)
+
+  console.log(mistakeValsSummedNoInitial, mistakeValsSummedWithInitial); // 6, 6 (despite the first not passing an initial value)
 
   // ...and almost always leads to unexpected results
   const ironThrone = ['Stark', 'Stark', 'Lannister', 'Lannister', 'Lannister', 'Greyjoy'];
   const mistakeTallyNoInit = (tally, item) => {
     if (!tally[item]) {
-      tally[item] = 1;
-    } else {
-      tally[item]++;
+      tally[item] = 0;
     }
+    tally[item]++;
     return tally;
-  }
-  // const noInitialValue = ironThrone.reduce(mistakeTallyNoInit);
-  
-  // console.log(noInitialValue); // Stark (throws an error in strict mode)
-  
+  };
+  const noInitialValue = ironThrone.reduce(mistakeTallyNoInit);
+
+  console.log(noInitialValue); // Stark (since we did not pass a)
+
   // Failing to return your accumulator is the other most common mistake
   const mistakeTallyNoAccReturn = (tally, item) => {
     if (!tally[item]) {
-      tally[item] = 1;
-    } else {
-      tally[item]++;
+      tally[item] = 0;
     }
+    tally[item]++;
     // return tally;
-  }
+  };
   // const noAccReturned = ironThrone.reduce(mistakeTallyNoAccReturn, {}); // throws an error
-}
-
-// Toy Problems...reduced!
-{
-  const findLongestWord = (sentence) => {
-    return sentence
-      .split(' ')
-      .reduce((acc, word, index, wordArr) => {
-        if (acc.length < word.length) {
-          acc = word;
-        }
-        return acc;
-      }, '');
-  }
-
-  const longestWord = findLongestWord("I have come here to return accumulators and chew bubblegum..."); 
-  
-  console.log(longestWord); // 'accumulators'
 }
 
 // Flatten
 {
-  const nestedArraysToFlatten = [[1,2,3],[4,5,6],[7,8,9]];
+  const nestedArraysToFlatten = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
 
   const flatten = (acc, arr) => acc.concat(arr);
 
@@ -200,18 +187,18 @@
     name: 'Beth',
     age: 28,
     likes: [
-      'Math', 
+      'Math',
       'JavaScript',
-      'Ricochet Robots'
-    ]
+      'Ricochet Robots',
+    ],
   }, {
     name: 'Dan',
     age: 29,
     likes: [
       'Crickets',
       'The Queen',
-      'Being Proper'
-    ]
+      'Being Proper',
+    ],
   }, {
     name: 'Sunny',
     age: 25,
@@ -219,7 +206,7 @@
       'BitCoin',
       'Meteor',
       'Beth',
-    ]
+    ],
   }, {
     name: 'Zach',
     age: 28,
@@ -227,7 +214,7 @@
       'JavaScript',
       'Bad Puns',
       'Reduce',
-    ]
+    ],
   }, {
     name: 'Magee',
     age: 36,
@@ -235,7 +222,7 @@
       'JavaScript',
       'Dogs',
       'Riding Motorcycles',
-    ]
+    ],
   }];
 
   const mentorNamesAndAges = techMentors
@@ -243,8 +230,8 @@
       namesAndAges.names.push(mentor.name);
       namesAndAges.ages.push(mentor.age);
       return namesAndAges;
-    }, {names: [], ages: []});
-  
+    }, { names: [], ages: [] });
+
   console.log(mentorNamesAndAges);
 
   const sortedMentorLikes = techMentors
@@ -256,20 +243,35 @@
 
 // Reducing Functions – Pipe and Compose with Reduce
 {
-  const add1 = x => x + 1;    
-  
+  const add1 = x => x + 1;
   const mult5 = x => x * 5;
-  
   const funcs = [add1, mult5];
-  
+
   const pipedResults = funcs
     .reduce((result, func) => func(result), 2);
 
   // Iterating from back to front with reduceRight
   const composedResults = funcs
     .reduceRight((result, func) => func(result), 2);
-  
+
   console.log(pipedResults); // 15 ((2 + 1) * 5)
   console.log(composedResults); // 11 ((2 * 5) + 1)
 }
 
+// Toy Problems...reduced!
+{
+  const findLongestWord = sentence => {
+    return sentence
+      .split(' ')
+      .reduce((acc, word) => {
+        if (acc.length < word.length) {
+          return word;
+        }
+        return acc;
+      }, '');
+  };
+
+  const longestWord = findLongestWord('I have come here to return accumulators and chew bubblegum...');
+
+  console.log(longestWord); // 'accumulators'
+}
